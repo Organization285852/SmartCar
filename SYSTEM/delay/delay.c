@@ -1,5 +1,5 @@
 #include "delay.h"
-
+#include "scheduler.h"
 
 
 volatile uint32_t sysTickUptime = 0;
@@ -40,9 +40,11 @@ void delay_ms(uint32_t ms)
     while (ms--)
         delay_us(1000);
 }
+
 void SysTick_Handler(void)
 {
 	sysTickUptime++;//一毫秒中断一次
+  Loop_check();
 }
 
 uint32_t millis(void)

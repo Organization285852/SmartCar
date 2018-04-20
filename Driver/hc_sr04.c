@@ -1,7 +1,5 @@
 #include "hc_sr04.h"
 
-
-
 //定时器4通道1输入捕获配置
 
 TIM_ICInitTypeDef  TIM4_ICInitStructure;

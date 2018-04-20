@@ -5,6 +5,8 @@
 ".\objects\core_cm3.o"
 ".\objects\startup_stm32f10x_md.o"
 ".\objects\motor.o"
+".\objects\hc_sr04.o"
+".\objects\scheduler.o"
 ".\objects\sys.o"
 ".\objects\delay.o"
 ".\objects\misc.o"
