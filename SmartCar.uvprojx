@@ -462,6 +462,16 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\scheduler.c</FilePath>
             </File>
+            <File>
+              <FileName>iic_lcd1602.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\iic_lcd1602.c</FilePath>
+            </File>
+            <File>
+              <FileName>myiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\myiic.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
