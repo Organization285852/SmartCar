@@ -152,7 +152,6 @@ void lcd1602_duty(void)
 			display_str(8,1,"D2:   cm");
 			display_num(11,1,(u8)(distance[0]/10));
 			LED0 ^= 1;
-			
 		}
 		else
 		{

@@ -131,6 +131,7 @@ void Duty_20ms(void) //”Ô“Ùøÿ÷∆∫Õ±‹’œ
 			motor_stop(1);
 			motor_stop(2);
 			next_cmd = 0;
+		syn_7318_cmd = 0;
 	}
   switch(syn_7318_cmd)
 	{
