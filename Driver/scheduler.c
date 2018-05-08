@@ -8,10 +8,16 @@
 **********************************************************************************/
 #include "scheduler.h"
 #include "delay.h"
+#include "hc_sr04.h"
+#include "iic_lcd1602.h"
+#include "syn7318.h"
+#include "motor.h"
+#include "dht11.h"
 
 s16 loop_cnt;
 
 loop_t loop;
+u8 T,H;
 void Loop_check()  //TIME INTTERRUPT 1ms执行一次
 {
 	loop.time++; //u16
@@ -32,16 +38,28 @@ void Loop_check()  //TIME INTTERRUPT 1ms执行一次
 }
 
 float duty_time[6][2];
+int t1ms=0;
+u8 next_cmd=0;
 void Duty_1ms(void)
 {
   
   duty_time[0][1] = GetSysTime_us()/1000000.0f - duty_time[0][0];
   
 	duty_time[0][0] = GetSysTime_us()/1000000.0f;
+	if(next_cmd)
+	{
+		t1ms++;
+		if(t1ms>1500)
+		{
+			syn_7318_cmd = next_cmd;//继续前进
+			t1ms = 0;
+			next_cmd = 0;
+		}
+	}
 }
-
 void Duty_2ms(void)
 {
+	capture_duty();
   
   duty_time[1][1] = GetSysTime_us()/1000000.0f - duty_time[1][0];
 	duty_time[1][0] = GetSysTime_us()/1000000.0f;
@@ -49,7 +67,6 @@ void Duty_2ms(void)
 
 void Duty_5ms(void)
 {
-  
 	duty_time[2][1] = GetSysTime_us()/1000000.0f - duty_time[2][0];
 	duty_time[2][0] = GetSysTime_us()/1000000.0f;
 
@@ -59,21 +76,128 @@ void Duty_5ms(void)
 void Duty_10ms(void)
 {
   duty_time[3][1] = GetSysTime_us()/1000000.0f - duty_time[3][0];
-  
+  SYN7318_duty();
 	duty_time[3][0] = GetSysTime_us()/1000000.0f;
 }
 
-void Duty_20ms(void)
+void Duty_20ms(void) //语音控制和避障
 {
+	static u8 speed=20;
   duty_time[4][1] = GetSysTime_us()/1000000.0f - duty_time[4][0];
-  
+	
+	if( ((syn_7318_cmd!=5)&&(syn_7318_cmd!=0))&&(next_cmd==0))
+	{
+		if((distance[1]<90)&&(distance[1]>5))//前方障碍
+		{
+			if(R_IN&&L_IN)//左右都有
+			{
+				syn_7318_cmd = 4;//后退
+			}
+			else if(R_IN)
+			{
+				syn_7318_cmd = 2;//左转
+			}
+			else if(L_IN)
+			{
+				syn_7318_cmd = 1;//右转
+			}
+			else
+			{
+				syn_7318_cmd = 1;//右转
+			}
+			next_cmd = 3;
+		}
+		else
+		{
+			if(R_IN&&L_IN)//左右都有
+			{
+				syn_7318_cmd = 4;//后退
+				next_cmd = 2;
+			}
+			else if(R_IN)
+			{
+				syn_7318_cmd = 2;//左转
+				next_cmd = 3;
+			}
+			else if(L_IN)
+			{
+				syn_7318_cmd = 1;//右转
+				next_cmd = 3;
+			}
+		}
+	}
+	if((distance[0]>50))//有台阶
+	{
+			motor_stop(1);
+			motor_stop(2);
+			next_cmd = 0;
+	}
+  switch(syn_7318_cmd)
+	{
+		case 1://右转
+		{
+			Set_motor_dir(1,1);
+			Set_motor_dir(2,1);
+			set_motor_speed(1,1);
+			set_motor_speed(2,speed);
+		
+		}break;
+		case 2://左转
+		{
+			Set_motor_dir(1,1);
+			Set_motor_dir(2,1);
+			set_motor_speed(1,speed);
+			set_motor_speed(2,1);
+		}break;
+		case 3://前进
+		{
+			Set_motor_dir(1,1);
+			Set_motor_dir(2,1);
+			set_motor_speed(1,speed);
+			set_motor_speed(2,speed);
+		}break;
+		case 4://后退
+		{
+			Set_motor_dir(1,0);
+			Set_motor_dir(2,0);
+			set_motor_speed(1,speed);
+			set_motor_speed(2,speed);
+		}break;
+		case 5://停止
+		{
+			motor_stop(1);
+			motor_stop(2);
+			next_cmd = 0;
+		}break;
+		case 6://加速
+		{
+			if(speed<80)
+			{
+				speed += 10;
+				set_motor_speed(1,speed);
+				set_motor_speed(2,speed);
+			}
+		}
+		case 7://减速
+		{
+			if(speed>30)
+			{
+				speed -= 10;
+				set_motor_speed(1,speed);
+				set_motor_speed(2,speed);
+			}
+		}
+		default:break;
+	}
 	duty_time[4][0] = GetSysTime_us()/1000000.0f;
 }
 u16 t;
 void Duty_50ms(void)
 {
+	hc_sr04_duty();
   duty_time[5][1] = GetSysTime_us()/1000000.0f - duty_time[5][0];
   duty_time[5][0] = GetSysTime_us()/1000000.0f;
+	lcd1602_duty();
 }
 
 void Duty_Loop(void)   					//最短任务周期为1ms，总的代码执行时间需要小于1ms。

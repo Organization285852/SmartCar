@@ -3,12 +3,12 @@
 
 #include "sys.h"
 
-#define A_H    PAout(1)
-#define A_L    PAout(2)
-#define B_H    PAout(3)
-#define B_L    PAout(4)
+#define A_H    PAout(0)
+#define A_L    PAout(1)
+#define B_H    PAout(2)
+#define B_L    PAout(3)
 
-#define TARR    1000
+#define TARR    50
 
 void motor_init(void);
 void set_motor_speed(u8 ch,u8 speed);

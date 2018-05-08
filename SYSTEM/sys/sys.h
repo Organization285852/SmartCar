@@ -61,4 +61,7 @@ void INTX_ENABLE(void);	//开启所有中断
 void MSR_MSP(u32 addr);	//设置堆栈地址
 void return_adress_print(void);
 
+
+#define LED0 PCout(13)
+
 #endif

@@ -84,8 +84,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -363,8 +361,6 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
-            <v6Lang>0</v6Lang>
-            <v6LangP>0</v6LangP>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32F10X_MD,USE_STDPERIPH_DRIVER</Define>
@@ -462,6 +458,26 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\scheduler.c</FilePath>
             </File>
+            <File>
+              <FileName>myiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\myiic.c</FilePath>
+            </File>
+            <File>
+              <FileName>iic_lcd1602.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\iic_lcd1602.c</FilePath>
+            </File>
+            <File>
+              <FileName>syn7318.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\syn7318.c</FilePath>
+            </File>
+            <File>
+              <FileName>dht11.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\dht11.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -476,6 +492,11 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SYSTEM\delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SYSTEM\usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>
